@@ -126,9 +126,6 @@ void shamir() {
     writeFile(decryptedFile, decryptedStream.str());
 
     cout << "Шифрование завершено.\n";
-    cout << "Результаты:\n";
-    cout << "- Зашифрованный текст: " << encryptedFile << "\n";
-    cout << "- Расшифрованный текст: " << decryptedFile << "\n";
 }
 
 //атака на алгоритм Шамира
