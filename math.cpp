@@ -1,6 +1,7 @@
 #include <iostream> 
 #include <cstdint>
 #include <stdexcept>
+#include <vector>
 #include "math.h"
 
 using namespace std;
@@ -23,8 +24,10 @@ bool relativelyPrime(uint64_t a, uint64_t b) {
 //проверка числа на простоту
 bool isPrime(uint64_t n) {
     if (n < 2) return false;
-    for (uint64_t i = 2; i * i <= n; ++i)
+    if (n % 2 == 0 && n != 2) return false;
+    for (uint64_t i = 3; i * i <= n; i += 2){
         if (n % i == 0) return false;
+    }
 
     return true;
 }
@@ -109,6 +112,33 @@ uint64_t inversedC(int64_t c, int64_t m) {
     
 }
 
+//решение линейного уравнения
+vector<int64_t> solveDiophantine(int64_t a, int64_t b, int64_t d) {
+    int64_t x0 = 1, y0 = 0;
+    int64_t x1 = 0, y1 = 1;
+    int64_t aa = a, bb = b;
+
+    //алгоритм расширенного Евклида
+    while (bb != 0) {
+        int64_t q = aa / bb;
+        int64_t r = aa % bb;
+        int64_t x2 = x0 - q * x1;
+        int64_t y2 = y0 - q * y1;
+
+        aa = bb;
+        bb = r;
+        x0 = x1; x1 = x2;
+        y0 = y1; y1 = y2;
+    }
+
+    if (d % aa != 0) {
+        return {}; 
+    }
+
+    int64_t k = d / aa;
+    return { x0 * k, y0 * k };
+}
+
 //возведение в степень по модулю 
 void powmod() {
     uint64_t a, x, p;
@@ -119,25 +149,25 @@ void powmod() {
     uint64_t reducedX = degreeCalc(a, x, p);
     if (reducedX == -1) return;
 
-    cout << "Вычисление через теорему Ферма: " << binaryExpansDegree(a, reducedX, p) << endl;
-    cout << "Вычисление через логарифм: " << binaryExpansDegree(a, reducedX, p) << endl;
+    cout << "Вычисление через теорему Ферма: " << a << "^" << x << " mod " << p << " = " << binaryExpansDegree(a, reducedX, p) << endl;
+    cout << "Вычисление через логарифм: " << a << "^" << x << " mod " << p << " = " << binaryExpansDegree(a, reducedX, p) << endl;
 }
 
 //алгоритм Евклида
 void euclid() {
-    uint64_t a, b;
+    int64_t a, b;
     cout << "Введите два числа a и b: ";
     cin >> a >> b;
     
-    uint64_t r0 = a, r1 = b;
-    uint64_t u0 = 1, u1 = 0;
-    uint64_t v0 = 0, v1 = 1;
+    int64_t r0 = a, r1 = b;
+    int64_t u0 = 1, u1 = 0;
+    int64_t v0 = 0, v1 = 1;
 
     while (r1 != 0) {
-        uint64_t q = r0 / r1;
-        uint64_t r2 = r0 - q * r1;
-        uint64_t u2 = u0 - q * u1;
-        uint64_t v2 = v0 - q * v1;
+        int64_t q = r0 / r1;
+        int64_t r2 = r0 - q * r1;
+        int64_t u2 = u0 - q * u1;
+        int64_t v2 = v0 - q * v1;
         r0 = r1; r1 = r2;
         u0 = u1; u1 = u2;
         v0 = v1; v1 = v2;
@@ -149,12 +179,23 @@ void euclid() {
 //вычисление взаимнообратного числа
 void inverse() {
     uint64_t c, m;
-    cout << "Введите число и модуль: ";
+    cout << "Введите число (c) и модуль (m): ";
     cin >> c >> m;
 
-    uint64_t inv = inversedC(c, m);
-    if (inv == -1)
+    if (inversedC(c, m) == -1)
         cout << "Обратного элемента не существует.\n";
     else
-        cout << "Обратный элемент: " << inv << endl;
+        cout << "Обратный элемент: " << c << "^-1" << " mod " << m << " = " << inversedC(c, m) << endl;
+}
+
+//вычисление цепной дроби
+void solveEquation() {
+    int64_t a = 275, b = 145, d = 10;
+    vector<int64_t> result = solveDiophantine(a, b, d);
+
+    if (result.empty()) {
+        cout << "Решений нет (НОД не делит d).\n";
+    } else {
+        cout << "Решение уравнения: a = " << result[0] << ", b = " << result[1] << endl;
+    }
 }

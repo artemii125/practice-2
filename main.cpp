@@ -1,7 +1,6 @@
 #include <iostream>
 #include "math.h"
 #include "shamir.h"
-#include "frac.h"
 #include "utils.h"
 
 using namespace std;

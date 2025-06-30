@@ -31,7 +31,7 @@ void shamir() {
 
     switch(choice) {
         case 1:{
-            cout << "Введите простое число p (модуль), больше 255: ";
+            cout << "Введите простое p (больше 255): ";
             cin >> p;
 
             if (!isPrime(p) || p <= 255) {
@@ -131,7 +131,7 @@ void shamir() {
 //атака на алгоритм Шамира
 void shamirAttack() {
     uint64_t p, Ca, Cb, Da, Db;
-    cout << "Введите простое число p (модуль), больше 255: ";
+    cout << "Введите простое p (больше 255): ";
     cin >> p;
 
     if (!isPrime(p) || p <= 255) {
